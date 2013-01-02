@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "nodemailer": "~0.3.37",
-    "email-templates": "0.0.7"
+    "email-templates": "0.0.7",
+    "underscore": "~1.4.3"
   }
 }

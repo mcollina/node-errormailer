@@ -1,6 +1,7 @@
 var path           = require('path');
 var templatesDir   = path.join(__dirname, 'templates');
 var emailTemplates = require('email-templates');
+var _ = require("underscore");
 
 
 module.exports = function errormailer(transport, opts) {
@@ -11,7 +12,18 @@ module.exports = function errormailer(transport, opts) {
   opts.to = opts.to || "error@localhost";
   opts.subject = opts.subject || "Error";
 
-  return function(errorToBeSent) {
+  return function(errorToBeSent, req, res, next) {
+
+    if(typeof next != 'function') {
+      next = function() {}
+    }
+
+    if(!errorToBeSent) {
+      next();
+      return;
+    }
+
+    var mail = _.clone(opts);
 
     emailTemplates(templatesDir, function(err, template) {
       
@@ -35,10 +47,11 @@ module.exports = function errormailer(transport, opts) {
 
       template('basic_error', locals, function(err, html, text) {
 
-        opts.text = text;
-        opts.html = html;
+        mail.text = text;
+        mail.html = html;
 
-        transport.sendMail(opts, function(err) {
+        transport.sendMail(mail, function(err) {
+          next();
           if (err) console.log(err);
         });
       });
