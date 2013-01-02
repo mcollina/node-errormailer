@@ -1,5 +1,5 @@
 {
-  "name": "node-error-mailer",
+  "name": "errormailer",
   "version": "0.0.1",
   "description": "Sending email for each error in your node app was never easier! It fully support connect and express.",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mcollina/node-error-mailer"
+    "url": "https://github.com/mcollina/node-errormailer"
   },
   "keywords": [
     "express",
@@ -27,7 +27,7 @@
     "connect": "~2.7.0"
   },
   "dependencies": {
-    "async": "~0.1.22",
-    "nodemailer": "~0.3.37"
+    "nodemailer": "~0.3.37",
+    "email-templates": "0.0.7"
   }
 }
