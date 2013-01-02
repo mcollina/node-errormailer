@@ -3,6 +3,7 @@ var templatesDir   = path.join(__dirname, 'templates');
 var emailTemplates = require('email-templates');
 var _ = require("underscore");
 
+var env = process.env.NODE_ENV || 'development';
 
 module.exports = function errormailer(transport, opts) {
 
@@ -18,7 +19,7 @@ module.exports = function errormailer(transport, opts) {
       next = function() {}
     }
 
-    if(!errorToBeSent) {
+    if(env != 'production' || !errorToBeSent) {
       next();
       return;
     }
