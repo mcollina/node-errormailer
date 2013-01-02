@@ -7,7 +7,6 @@ describe("errormailer connect support", function() {
 
   var transport;
   var transportSpy;
-  var instance;
   var server;
 
   function verifyMailWithOpts(opts) {
@@ -22,14 +21,15 @@ describe("errormailer connect support", function() {
     };
     transportSpy = sinon.spy(transport, 'sendMail');
 
-    instance = errormailer(transport);
-
     var errorFunc = function(req, res, next) { 
       if(req.originalUrl == "/index.html")
         throw "my custom error";
       next();
     };
-    server = connect().use(errorFunc).use(instance).listen(8283, done);
+    server = connect().
+      use(errorFunc).
+      use(errormailer(transport)).
+      listen(8283, done);
   });
 
   afterEach(function(done) {
