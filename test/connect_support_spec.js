@@ -24,8 +24,10 @@ describe("errormailer connect support", function() {
 
     instance = errormailer(transport);
 
-    var errorFunc = function(req, res) { 
-      throw "my custom error";
+    var errorFunc = function(req, res, next) { 
+      if(req.originalUrl == "/index.html")
+        throw "my custom error";
+      next();
     };
     server = connect().use(errorFunc).use(instance).listen(8283, done);
   });
@@ -38,8 +40,13 @@ describe("errormailer connect support", function() {
     http.get("http://localhost:8283/index.html", function(res) {
       expect(transportSpy).to.have.been.called;
       done();
-    }).on('error', function(e) {
-      console.log("Got error: " + e.message);
-    });
+    })
+  });
+
+  it("should not send an email if an exception was not raised", function(done) {
+    http.get("http://localhost:8283/aaaa.html", function(res) {
+      expect(transportSpy).not.to.have.been.called;
+      done();
+    })
   });
 });
