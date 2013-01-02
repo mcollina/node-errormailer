@@ -59,8 +59,11 @@ module.exports = function errormailer(transport, opts) {
         mail.html = html;
 
         transport.sendMail(mail, function(err) {
+          if (err) {
+            console.log(err);
+            console.log(errorToBeSent.toString());
+          }
           next();
-          if (err) console.log(err);
         });
       });
 

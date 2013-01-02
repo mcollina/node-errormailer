@@ -4,6 +4,7 @@ process.env.NODE_ENV = 'production';
 
 var nodemailer = require('nodemailer');
 var errormailer = require("../");
+var connect = require("connect");
 
 // Create a SMTP transport object
 var transport = nodemailer.createTransport("SMTP", {
@@ -21,8 +22,13 @@ var errorHandler = errormailer(transport, {
   to: "matteo.collina@gmail.com"
 });
 
-errorHandler("this is an error!");
+var funcErr = function(req, res) { throw "AHAHH"; };
 
-setTimeout(function() {
-  process.exit(0);
-}, 5000);
+var app = connect().
+  use(funcErr).
+  use(errorHandler).
+  listen(process.env.PORT || 3000, 
+         function() {
+           console.log("ErrorMailer connect demo started at port 3000");
+         });
+

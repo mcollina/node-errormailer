@@ -27,12 +27,12 @@
 
                             <% if (typeof req == 'object') { %>
                             <h2 class="h2">Request</h2>
-                            <strong>Path:</strong> <%= req.url %>
-                            <strong>Sender IP:</strong> <%= req.connection.remoteAddress %>
+                            <strong>Path:</strong> <%= req.url %><br />
+                            <strong>Sender IP:</strong> <%= req.connection.remoteAddress %><br />
 
                             <h3 class="h3">Headers</h3>
                             <% _.each(req.headers, function(value, key) { %>
-                            <strong><%= key %>:</strong> <%= value %>
+                            <strong><%= key %>:</strong> <%= value %><br />
                             <% }) %>
                             <% } %>
 

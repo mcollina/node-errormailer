@@ -22,8 +22,10 @@ describe("errormailer connect support", function() {
     transportSpy = sinon.spy(transport, 'sendMail');
 
     var errorFunc = function(req, res, next) { 
-      if(req.originalUrl == "/index.html")
+      if(req.url == "/index.html") {
         throw "my custom error";
+        return;
+      }
       next();
     };
     server = connect().
