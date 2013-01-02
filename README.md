@@ -1,6 +1,10 @@
 express-error-mailer
 ====================
 
+[![Build
+Status](https://travis-ci.org/mcollina/node-errormailer.png)](https://travis-ci.org/mcollina/node-errormailer)
+
+
 Sending email for each error must be easy!
 
 ### HTML email template license
