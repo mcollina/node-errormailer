@@ -38,7 +38,9 @@ module.exports = function errormailer(transport, opts) {
         opts.text = text;
         opts.html = html;
 
-        transport.sendMail(opts);
+        transport.sendMail(opts, function(err) {
+          if (err) console.log(err);
+        });
       });
 
     });
