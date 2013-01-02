@@ -1,12 +1,23 @@
-
 Error
 ====
-
 <%= message %>
+
+<% if (typeof req == 'object') { %>
+Request
+====
+Path: <%= req.url %>
+Sender IP: <%= req.connection.remoteAddress %>
+
+Headers
+====
+<% _.each(req.headers, function(value, key) { %>
+<%= key %>: <%= value %>
+<% }) %>
+<% } %>
+
 
 <% if (stack != "") { %>
 Stack
 =====
-
 <%= stack %>
 <% } %>

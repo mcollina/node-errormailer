@@ -49,4 +49,46 @@ describe("errormailer connect support", function() {
       done();
     })
   });
+
+  it("should send an email including the client ip (text)", function(done) {
+    http.get("http://localhost:8283/index.html", function(res) {
+      verifyMailWithOpts({ text: sinon.match("127.0.0.1") });
+      done();
+    })
+  });
+
+  it("should send an email including the path (text)", function(done) {
+    http.get("http://localhost:8283/index.html", function(res) {
+      verifyMailWithOpts({ text: sinon.match("/index.html") });
+      done();
+    })
+  });
+
+  it("should send an email including the client ip (html)", function(done) {
+    http.get("http://localhost:8283/index.html", function(res) {
+      verifyMailWithOpts({ html: sinon.match("127.0.0.1") });
+      done();
+    })
+  });
+
+  it("should send an email including the path (html)", function(done) {
+    http.get("http://localhost:8283/index.html", function(res) {
+      verifyMailWithOpts({ html: sinon.match("/index.html") });
+      done();
+    })
+  });
+
+  it("should send an email including the keep alive header (text)", function(done) {
+    http.get("http://localhost:8283/index.html", function(res) {
+      verifyMailWithOpts({ text: sinon.match("keep-alive") });
+      done();
+    })
+  });
+
+  it("should send an email including the keep alive header (html)", function(done) {
+    http.get("http://localhost:8283/index.html", function(res) {
+      verifyMailWithOpts({ html: sinon.match("keep-alive") });
+      done();
+    })
+  });
 });
