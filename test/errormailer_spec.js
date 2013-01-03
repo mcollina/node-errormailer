@@ -1,6 +1,4 @@
 
-var errormailer = require("../");
-
 describe("error-mailer", function() {
 
   var transport;

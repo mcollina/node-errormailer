@@ -1,5 +1,4 @@
 
-var errormailer = require("../");
 var connect = require("connect");
 var http = require("http");
 

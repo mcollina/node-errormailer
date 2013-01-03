@@ -32,7 +32,7 @@ module.exports = function errormailer(transport, opts) {
     var mail = _.clone(opts);
 
     emailTemplates(templatesDir, function(err, template) {
-      
+
       if(err) {
         console.log(err);
         console.log(errorToBeSent.toString());

@@ -9,3 +9,5 @@ global.sinon = require("sinon");
 // in production mode, as it is
 // how this package is to be used
 process.env.NODE_ENV = 'production';
+
+global.errormailer = require("../");
