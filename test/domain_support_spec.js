@@ -8,6 +8,7 @@ describe("errormailer domain support", function() {
   var transportSpy;
   var afterSend;
   var d;
+  var uncaughtExceptionHandler;
 
   function verifyMailWithOpts(opts) {
     expect(transportSpy).to.have.been.calledWith(sinon.match(opts));
@@ -26,7 +27,13 @@ describe("errormailer domain support", function() {
 
     // override for a bug in mocha
     // https://github.com/visionmedia/mocha/issues/513
-    process.removeListener("uncaughtException", _.last(process.listeners("uncaughtException")));
+    uncaughtExceptionHandler = _.last(process.listeners("uncaughtException"));
+    process.removeListener("uncaughtException", uncaughtExceptionHandler);
+  });
+
+  afterEach(function() {
+    d.dispose();
+    process.on("uncaughtException", uncaughtExceptionHandler);
   });
 
   it("should support Domain bindings", function(done) {
@@ -41,4 +48,5 @@ describe("errormailer domain support", function() {
       });
     });
   });
+
 });
