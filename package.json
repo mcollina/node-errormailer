@@ -1,6 +1,6 @@
 {
   "name": "errormailer",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Sending email for each error in your node app was never easier! It fully support connect and express.",
   "main": "index.js",
   "scripts": {
@@ -12,6 +12,7 @@
   },
   "keywords": [
     "express",
+    "connect",
     "mail",
     "error",
     "exception",
