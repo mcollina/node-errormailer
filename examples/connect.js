@@ -22,11 +22,12 @@ var errorHandler = errormailer(transport, {
   to: "matteo.collina@gmail.com"
 });
 
-var funcErr = function(req, res) { throw "AHAHH"; };
+var funcErr = function(req, res) { throw new Error("AHAHH"); };
 
 var app = connect().
   use(funcErr).
   use(errorHandler).
+  use(connect.errorHandler({dumpException: true, showStack: true})).
   listen(process.env.PORT || 3000, 
          function() {
            console.log("ErrorMailer connect demo started at port 3000");

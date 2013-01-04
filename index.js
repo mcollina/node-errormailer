@@ -26,7 +26,7 @@ module.exports = function errormailer(transport, opts) {
     }
 
     if(env != 'production' || !errorToBeSent) {
-      next();
+      next(errorToBeSent);
       return;
     }
 
@@ -61,7 +61,7 @@ module.exports = function errormailer(transport, opts) {
         console.log(err);
         console.log(errorToBeSent.toString());
       }
-      next();
+      next(errorToBeSent);
     });
   };
 };

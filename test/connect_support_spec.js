@@ -7,6 +7,7 @@ describe("errormailer connect support", function() {
   var transport;
   var transportSpy;
   var server;
+  var errorSeenByConnect;
 
   function verifyMailWithOpts(opts) {
     expect(transportSpy).to.have.been.calledWith(sinon.match(opts));
@@ -30,6 +31,10 @@ describe("errormailer connect support", function() {
     server = connect().
       use(errorFunc).
       use(errormailer(transport)).
+      use(function(err, req, res, next) {
+        errorSeenByConnect = err;
+        next();
+      }).
       listen(8283, done);
   });
 
@@ -89,6 +94,13 @@ describe("errormailer connect support", function() {
   it("should send an email including the keep alive header (html)", function(done) {
     http.get("http://localhost:8283/index.html", function(res) {
       verifyMailWithOpts({ html: sinon.match("keep-alive") });
+      done();
+    })
+  });
+
+  it("should forward the error to the next middleware", function(done) {
+    http.get("http://localhost:8283/index.html", function(res) {
+      expect(errorSeenByConnect).to.not.be.undefined;
       done();
     })
   });
