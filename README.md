@@ -45,6 +45,7 @@ for more details.
 ## Install
 
 ```
+npm install nodemailer --save
 npm install node-errormailer --save
 ```
 
