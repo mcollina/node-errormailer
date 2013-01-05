@@ -12,7 +12,7 @@ module.exports = function errormailer(transport, opts) {
 
   opts.from = opts.from || "error@localhost";
   opts.to = opts.to || "error@localhost";
-  opts.subject = opts.subject || "Error";
+  opts.subject = opts.subject || "Error:";
 
   // four arguments are needed by connect
   return function(errorToBeSent, req, res, next) {
@@ -48,6 +48,8 @@ module.exports = function errormailer(transport, opts) {
         }
         locals.req = req;
         locals._ = _;
+
+        mail.subject = mail.subject + " " + locals.message;
 
         template('basic_error', locals, callback);
       },

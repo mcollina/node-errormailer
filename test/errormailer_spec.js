@@ -91,7 +91,7 @@ describe("error-mailer", function() {
     instance("this is an error");
 
     afterSend = function() {
-      verifyMailWithOpts({ subject: "my custom error" });
+      verifyMailWithOpts({ subject: "my custom error this is an error" });
       done();
     };
   });
@@ -102,7 +102,7 @@ describe("error-mailer", function() {
     instance("this is an error");
 
     afterSend = function() {
-      verifyMailWithOpts({ subject: "aaa" });
+      verifyMailWithOpts({ subject: "aaa this is an error" });
       done();
     };
   });
@@ -113,7 +113,7 @@ describe("error-mailer", function() {
     instance("this is an error");
 
     afterSend = function() {
-      verifyMailWithOpts({ subject: "Error" });
+      verifyMailWithOpts({ subject: "Error: this is an error" });
       done();
     };
   });
@@ -124,7 +124,7 @@ describe("error-mailer", function() {
     instance("this is an error");
 
     afterSend = function() {
-      verifyMailWithOpts({ subject: "Error", to: "error@localhost", from: "error@localhost" });
+      verifyMailWithOpts({ subject: "Error: this is an error", to: "error@localhost", from: "error@localhost" });
       done();
     };
   });
