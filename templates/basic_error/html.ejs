@@ -38,7 +38,9 @@
 
                             <% if (stack != "") { %>
                             <h2 class="h2">Stack</h2>
-                            <strong><%= stack %></strong>
+                            <code>
+                              <%- stack.replace(/\n/g, "<br />") %>
+                            </code>
                             <% } %>
                           </div>
                         </td>
