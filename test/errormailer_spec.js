@@ -173,6 +173,17 @@ describe("error-mailer", function() {
     };
   });
 
+  it("should include the error code in the title if the error is an object with a code", function(done) {
+    instance = errormailer(transport, {});
+    instance({ message: "an error with code", errno: 34, code: "ENOENT" });
+      
+    afterSend = function() {
+      verifyMailWithOpts({ text: sinon.match("34") });
+      verifyMailWithOpts({ text: sinon.match("ENOENT") });
+      done();
+    };
+  });
+
   it("should include the error stack in the text if the error is an object", function(done) {
     instance = errormailer(transport, {});
 
