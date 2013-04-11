@@ -36,7 +36,8 @@ module.exports = function errormailer(transport, opts) {
       async.apply(emailTemplates, templatesDir),
       function(template, callback) {
         var locals = {
-          subject: opts.subject
+          subject: opts.subject,
+          title:   'Error'
         };
 
         if(typeof errorToBeSent == "string") {
@@ -45,6 +46,14 @@ module.exports = function errormailer(transport, opts) {
         } else {
           locals.message = errorToBeSent.message;
           locals.stack = errorToBeSent.stack;
+            
+          // append error number and code to title
+          if (errorToBeSent.errno != "" &&
+              errorToBeSent.code != "") {
+              
+            locals.title += ' (Error code ' + errorToBeSent.errno
+                         + ' = ' + errorToBeSent.code;
+          }
         }
         locals.req = req;
         locals._ = _;
