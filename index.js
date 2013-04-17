@@ -52,7 +52,8 @@ module.exports = function errormailer(transport, opts) {
               typeof errorToBeSent.code !== 'undefined' && errorToBeSent.code != "") {
               
             locals.title += ' (Error code ' + errorToBeSent.errno
-                         + ' = ' + errorToBeSent.code;
+                         + ' = ' + errorToBeSent.code
+                         + ')';
           }
         }
         locals.req = req;

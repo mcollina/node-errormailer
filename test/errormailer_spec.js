@@ -180,6 +180,27 @@ describe("error-mailer", function() {
     afterSend = function() {
       verifyMailWithOpts({ text: sinon.match("34") });
       verifyMailWithOpts({ text: sinon.match("ENOENT") });
+      verifyMailWithOpts({ html: sinon.match(/Error \(Error code 34 = ENOENT\)<\/h2/)});
+      done();
+    };
+  });
+
+  it("should NOT include the error no and code in the title if the error no is undefined", function(done) {
+    instance = errormailer(transport, {});
+    instance({ message: "an error w/o no but code", errno: undefined, code: "ENOENT" });
+    
+    afterSend = function() {
+      verifyMailWithOpts({ html: sinon.match(/Error<\/h2/)});
+      done();
+    };
+  });
+
+  it("should NOT include the error no and code in the title if the error code is undefined", function(done) {
+    instance = errormailer(transport, {});
+    instance({ message: "an error w/o code but no", errno: 34, code: undefined });
+
+    afterSend = function() {
+      verifyMailWithOpts({ html: sinon.match(/Error<\/h2/)});
       done();
     };
   });
