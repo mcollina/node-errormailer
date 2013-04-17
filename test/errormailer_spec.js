@@ -173,7 +173,7 @@ describe("error-mailer", function() {
     };
   });
 
-  it("should include the error code in the title if the error is an object with a code", function(done) {
+  it("should include the error no and code in the title if the error object has them", function(done) {
     instance = errormailer(transport, {});
     instance({ message: "an error with code", errno: 34, code: "ENOENT" });
       

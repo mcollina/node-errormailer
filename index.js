@@ -48,8 +48,8 @@ module.exports = function errormailer(transport, opts) {
           locals.stack = errorToBeSent.stack;
             
           // append error number and code to title
-          if (errorToBeSent.errno != "" &&
-              errorToBeSent.code != "") {
+          if (typeof errorToBeSent.errno !== 'undefined' && errorToBeSent.errno != "" &&
+              typeof errorToBeSent.code !== 'undefined' && errorToBeSent.code != "") {
               
             locals.title += ' (Error code ' + errorToBeSent.errno
                          + ' = ' + errorToBeSent.code;
