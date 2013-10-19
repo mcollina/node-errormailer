@@ -35,6 +35,8 @@ var errorHandler = errormailer(transport, {
 errorHandler("this is an error!");
 ```
 
+Currently error emails are only sent for production environments. But if you want it to send always, use the option `sendAlways`.
+
 ## Connect/Express support
 
 __errormailer__ fully supports Connect and Express, just use the
@@ -78,7 +80,7 @@ error handling in node
 
 ## HTML email template license
 
-The html email template it is based on [MailChimp](http://mailchimp.com)'s 
+The html email template it is based on [MailChimp](http://mailchimp.com)'s
 email blueprints: https://github.com/mailchimp/Email-Blueprints
 
 The html email template is licensed under a Creative Commons

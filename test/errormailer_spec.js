@@ -34,7 +34,7 @@ describe("error-mailer", function() {
     instance = errormailer(transport, { to: "buuu@matteocollina.com" });
 
     instance("this is an error");
-    
+
     afterSend = function() {
       verifyMailWithOpts({ to: "buuu@matteocollina.com" });
       done();
@@ -176,7 +176,7 @@ describe("error-mailer", function() {
   it("should include the error no and code in the title if the error object has them", function(done) {
     instance = errormailer(transport, {});
     instance({ message: "an error with code", errno: 34, code: "ENOENT" });
-      
+
     afterSend = function() {
       verifyMailWithOpts({ text: sinon.match("34") });
       verifyMailWithOpts({ text: sinon.match("ENOENT") });
@@ -188,7 +188,7 @@ describe("error-mailer", function() {
   it("should NOT include the error no and code in the title if the error no is undefined", function(done) {
     instance = errormailer(transport, {});
     instance({ message: "an error w/o no but code", errno: undefined, code: "ENOENT" });
-    
+
     afterSend = function() {
       verifyMailWithOpts({ html: sinon.match(/Error<\/h2/)});
       done();
@@ -223,6 +223,19 @@ describe("error-mailer", function() {
 
     afterSend = function() {
       verifyMailWithOpts({ text: sinon.match("the 2 stack") });
+      done();
+    };
+  });
+
+  it("should send an email when not in production but sendAlways is on", function(done) {
+    process.env.NODE_ENV = 'staging';
+
+    instance = errormailer(transport, { to: "hello@matteocollina.com", sendAlways: true });
+
+    instance("this is an error");
+
+    afterSend = function() {
+      verifyMailWithOpts({ to: "hello@matteocollina.com"});
       done();
     };
   });
