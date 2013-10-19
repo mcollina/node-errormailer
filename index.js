@@ -4,15 +4,19 @@ var emailTemplates = require('email-templates');
 var _              = require("underscore");
 var async          = require("async");
 
-var env = process.env.NODE_ENV || 'development';
-
 module.exports = function errormailer(transport, opts) {
+
+  // mh: I moved this inside that block so that I can test properly with different environments
+  var env = process.env.NODE_ENV || 'development';
 
   opts = opts || {};
 
-  opts.from = opts.from || "error@localhost";
-  opts.to = opts.to || "error@localhost";
-  opts.subject = opts.subject || "Error:";
+  opts.from       = opts.from || "error@localhost";
+  opts.to         = opts.to || "error@localhost";
+  opts.subject    = opts.subject || "Error:";
+
+  // https://github.com/mcollina/node-errormailer/issues/9
+  opts.sendAlways = opts.sendAlways || false;
 
   // four arguments are needed by connect
   return function(errorToBeSent, req, res, next) {
@@ -21,11 +25,14 @@ module.exports = function errormailer(transport, opts) {
     // and connect/express
     next = _.last(arguments);
 
-    if(typeof next != 'function') {
-      next = function() {}
+    if (typeof next != 'function') {
+      next = function() {};
     }
 
-    if(env != 'production' || !errorToBeSent) {
+    // mh: do not process any further under three conditions:
+    // - errorToBeSent is empty
+    // - opts.sendAlways is false && environment is not production
+    if (!errorToBeSent || (!opts.sendAlways && env != 'production')) {
       next(errorToBeSent);
       return;
     }
@@ -40,17 +47,17 @@ module.exports = function errormailer(transport, opts) {
           title:   'Error'
         };
 
-        if(typeof errorToBeSent == "string") {
+        if (typeof errorToBeSent == "string") {
           locals.message = errorToBeSent;
           locals.stack = "";
         } else {
           locals.message = errorToBeSent.message;
           locals.stack = errorToBeSent.stack;
-            
+
           // append error number and code to title
           if (typeof errorToBeSent.errno !== 'undefined' && errorToBeSent.errno != "" &&
               typeof errorToBeSent.code !== 'undefined' && errorToBeSent.code != "") {
-              
+
             locals.title += ' (Error code ' + errorToBeSent.errno
                          + ' = ' + errorToBeSent.code
                          + ')';
