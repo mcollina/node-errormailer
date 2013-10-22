@@ -15,6 +15,11 @@ describe("errormailer domain support", function() {
   }
 
   beforeEach(function() {
+    // this is an hack to set errormailer
+    // in production mode, as it is
+    // how this package is to be used
+    process.env.NODE_ENV = 'production';
+
     transport = {
       sendMail: function(opts) {
         afterSend();
