@@ -239,5 +239,20 @@ describe("error-mailer", function() {
       done();
     };
   });
+
+  it("should skip error based on opts.ignore()", function(done) {
+    instance = errormailer(transport, {
+      to: "hello@matteocollina.com",
+      sendAlways: true,
+      ignore: function(err) {
+        return !!err;
+      }
+    });
+
+    instance("this is an error", null, null, function() {
+      expect(transportSpy).not.to.have.been.called;
+      done();
+    });
+  });
 });
 

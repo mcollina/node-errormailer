@@ -18,6 +18,9 @@ module.exports = function errormailer(transport, opts) {
   // https://github.com/mcollina/node-errormailer/issues/9
   opts.sendAlways = opts.sendAlways || false;
 
+  // https://github.com/mcollina/node-errormailer/issues/12
+  opts.ignore     = opts.ignore || false;
+
   // four arguments are needed by connect
   return function(errorToBeSent, req, res, next) {
 
@@ -32,7 +35,11 @@ module.exports = function errormailer(transport, opts) {
     // mh: do not process any further under three conditions:
     // - errorToBeSent is empty
     // - opts.sendAlways is false && environment is not production
-    if (!errorToBeSent || (!opts.sendAlways && env != 'production')) {
+    // - custom function in opts.ignore tells to ignore the error
+    if (!errorToBeSent ||
+       (!opts.sendAlways && env != 'production') ||
+       (opts.ignore && typeof opts.ignore == 'function' && opts.ignore(errorToBeSent))) {
+
       next(errorToBeSent);
       return;
     }
