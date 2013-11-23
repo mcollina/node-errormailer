@@ -35,7 +35,18 @@ var errorHandler = errormailer(transport, {
 errorHandler("this is an error!");
 ```
 
-Currently error emails are only sent for production environments. But if you want it to send always, use the option `sendAlways`.
+Currently error emails are only sent for production environments. But if you want it to send always, use the option `sendAlways`. There is also an option `ignore` where you can specify your own logic when to ignore an error to be sent, for example:
+
+```
+var errorHandler = errormailer(transport, {
+  subject: "Testing errormailer!",
+  to: "matteo.collina@gmail.com",
+  ignore: function(errorToBeSent) {
+    // any errors won't be sent that have a code && it's below 400 
+    return errorToBeSent.code && errorToBeSent.code < 400;
+  }
+});
+```
 
 ## Connect/Express support
 
