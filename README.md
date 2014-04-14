@@ -102,9 +102,14 @@ The html email template is licensed under a Creative Commons
 Attribution-ShareAlike 3.0 Unported License:
 http://creativecommons.org/licenses/by-sa/3.0/
 
+## Contributors
+
+  - [Matteo Collina](http://matteocollina.com) (Original Creator)
+  - [Michael Heuberger](https://binarykitchen.com)
+
 ## LICENSE - "MIT License"
 
-Copyright (c) 2013 Matteo Collina, http://matteocollina.com
+Copyright (c) 2014 Matteo Collina, http://matteocollina.com
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation

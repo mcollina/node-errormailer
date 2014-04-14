@@ -1,6 +1,6 @@
 {
   "name": "errormailer",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Sending email for each error in your node app was never easier! It supports connect and express.",
   "main": "index.js",
   "scripts": {
@@ -19,6 +19,16 @@
     "error handler"
   ],
   "author": "Matteo Collina <hello@matteocollina.com>",
+  "contributors": [
+    {
+      "name": "Matteo Collina",
+      "email": "hello@matteocollina.com"
+    },
+    {
+      "name": "Michael Heuberger",
+      "email": "michael.heuberger@binarykitchen.com"
+    }
+  ],
   "license": "MIT",
   "devDependencies": {
     "mocha": "^1.18.2",
@@ -32,5 +42,8 @@
     "email-templates": "^0.1.0",
     "underscore": "^1.6.0",
     "async": "^0.7.0"
+  },
+  "engines": {
+    "node": ">= 0.10.0"
   }
 }
