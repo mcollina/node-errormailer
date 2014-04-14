@@ -42,11 +42,15 @@ var errorHandler = errormailer(transport, {
   subject: "Testing errormailer!",
   to: "matteo.collina@gmail.com",
   ignore: function(errorToBeSent) {
-    // any errors won't be sent that have a code && it's below 400 
+    // any errors won't be sent that have a code && it's below 400
     return errorToBeSent.code && errorToBeSent.code < 400;
   }
 });
 ```
+
+## Custom output
+
+If you pass an genuine Error object onto __errormailer__, then `toString()` will be called to retrieve the error message. Like that, this enables the develope to customize the message output by overriding `toString()` in an error sub class.
 
 ## Connect/Express support
 
