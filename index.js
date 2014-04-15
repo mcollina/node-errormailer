@@ -1,8 +1,8 @@
 var path           = require('path');
 var templatesDir   = path.join(__dirname, 'templates');
 var emailTemplates = require('email-templates');
-var _              = require("underscore");
-var async          = require("async");
+var _              = require('underscore');
+var async          = require('async');
 
 module.exports = function errormailer(transport, opts) {
 
@@ -49,16 +49,26 @@ module.exports = function errormailer(transport, opts) {
     async.waterfall([
       async.apply(emailTemplates, templatesDir),
       function(template, callback) {
+
         var locals = {
           subject: opts.subject,
           title:   'Error'
         };
 
-        if (typeof errorToBeSent == "string") {
+        if (typeof errorToBeSent == 'string') {
           locals.message = errorToBeSent;
           locals.stack = "";
         } else {
-          locals.message = errorToBeSent.message;
+
+          // mh: it is better to call toString() because it enables
+          // developoers to customize the message output by
+          // overriding toString() in an error sub class
+          if (errorToBeSent instanceof Error) {
+            locals.message = errorToBeSent.toString();
+          } else {
+            locals.message = errorToBeSent.message;
+          }
+
           locals.stack = errorToBeSent.stack;
 
           // append error number and code to title
