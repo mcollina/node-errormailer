@@ -259,5 +259,16 @@ describe("error-mailer", function() {
       done();
     });
   });
+
+  it("should include the error message from error's native toString", function(done) {
+    instance = errormailer(transport, {});
+
+    instance(new Error("another error, beep!"));
+
+    afterSend = function() {
+      verifyMailWithOpts({ text: sinon.match("Error: another error, beep!") });
+      done();
+    };
+  });
 });
 

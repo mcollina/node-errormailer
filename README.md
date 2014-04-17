@@ -42,11 +42,15 @@ var errorHandler = errormailer(transport, {
   subject: "Testing errormailer!",
   to: "matteo.collina@gmail.com",
   ignore: function(errorToBeSent) {
-    // any errors won't be sent that have a code && it's below 400 
+    // any errors won't be sent that have a code && it's below 400
     return errorToBeSent.code && errorToBeSent.code < 400;
   }
 });
 ```
+
+## Custom output
+
+If you pass an genuine Error object onto __errormailer__, then `toString()` will be called to retrieve the error message. Like that, this enables the develope to customize the message output by overriding `toString()` in an error sub class.
 
 ## Connect/Express support
 
@@ -98,9 +102,14 @@ The html email template is licensed under a Creative Commons
 Attribution-ShareAlike 3.0 Unported License:
 http://creativecommons.org/licenses/by-sa/3.0/
 
+## Contributors
+
+  - [Matteo Collina](http://matteocollina.com) (Original Creator)
+  - [Michael Heuberger](https://binarykitchen.com)
+
 ## LICENSE - "MIT License"
 
-Copyright (c) 2013 Matteo Collina, http://matteocollina.com
+Copyright (c) 2014 Matteo Collina, http://matteocollina.com
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
