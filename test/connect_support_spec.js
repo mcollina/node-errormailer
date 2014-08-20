@@ -59,7 +59,10 @@ describe("errormailer connect support", function() {
     var options = URL.parse(url);
     options.agent = null;
     options.method = 'GET';
-    http.get(options, callback);
+    http.get(options, function(res) {
+      res.resume();
+      callback(res);
+    });
   }
 
   it("should send an email if an exception is raised inside connect", function(done) {
