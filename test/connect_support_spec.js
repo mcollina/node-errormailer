@@ -25,23 +25,30 @@ describe("errormailer connect support", function() {
         callback();
       }
     };
+
     transportSpy = sinon.spy(transport, 'sendMail');
 
-    var errorFunc = function(req, res, next) { 
+    var errorFunc = function(req, res, next) {
       if(req.url == "/index.html") {
         throw "my custom error";
         return;
       }
       next();
     };
+
     server = connect().
       use(errorFunc).
       use(errormailer(transport)).
       use(function(err, req, res, next) {
         errorSeenByConnect = err;
         next();
-      }).
-      listen(8283, done);
+      })
+
+    server.on('error', function(e) {
+      console.error(e)
+    })
+
+    server.listen(8283, done);
   });
 
   afterEach(function(done) {
