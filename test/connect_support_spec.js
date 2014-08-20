@@ -36,17 +36,13 @@ describe("errormailer connect support", function() {
       next();
     };
 
-    server = connect().
+    server = http.createServer(connect().
       use(errorFunc).
       use(errormailer(transport)).
       use(function(err, req, res, next) {
         errorSeenByConnect = err;
         next();
-      })
-
-    server.on('error', function(e) {
-      console.error(e)
-    })
+      }));
 
     server.listen(8283, done);
   });
