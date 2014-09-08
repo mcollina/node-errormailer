@@ -270,5 +270,16 @@ describe("error-mailer", function() {
       done();
     };
   });
+
+  it("should have truncated subject line on very long messages", function(done) {
+    instance = errormailer(transport, {});
+
+    instance({ message: "this is a very long message line that will cause the subject to be truncated" });
+
+    afterSend = function() {
+      verifyMailWithOpts({ subject: sinon.match("Error: this is a very long message l&hellip;") });
+      done();
+    };
+  });
 });
 

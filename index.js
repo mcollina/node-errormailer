@@ -4,6 +4,10 @@ var emailTemplates = require('email-templates');
 var _              = require('underscore');
 var async          = require('async');
 
+String.prototype.trunc = String.prototype.trunc || function(n) {
+    return this.length > n ? this.substr(0, n - 1) + '&hellip;' : this;
+};
+
 module.exports = function errormailer(transport, opts) {
 
   // mh: I moved this inside that block so that I can test properly with different environments
@@ -84,7 +88,8 @@ module.exports = function errormailer(transport, opts) {
         locals.req = req;
         locals._ = _;
 
-        mail.subject = mail.subject + " " + locals.message;
+        if (locals.message)
+          mail.subject += " " + locals.message.trunc(30);
 
         template('basic_error', locals, callback);
       },
