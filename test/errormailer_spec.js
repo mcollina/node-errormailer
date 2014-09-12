@@ -277,7 +277,7 @@ describe("error-mailer", function() {
     instance({ message: "this is a very long message line that will cause the subject to be truncated" });
 
     afterSend = function() {
-      verifyMailWithOpts({ subject: sinon.match("Error: this is a very long message l&hellip;") });
+      verifyMailWithOpts({ subject: sinon.match("Error: this is a very long message l...") });
       done();
     };
   });

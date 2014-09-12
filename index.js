@@ -5,7 +5,7 @@ var _              = require('underscore');
 var async          = require('async');
 
 function truncateString(str, n) {
-    return str.length > n ? str.substr(0, n - 1) + '&hellip;' : str;
+    return str.length > n ? str.substr(0, n - 1) + '...' : str;
 }
 
 module.exports = function errormailer(transport, opts) {
