@@ -4,9 +4,9 @@ var emailTemplates = require('email-templates');
 var _              = require('underscore');
 var async          = require('async');
 
-String.prototype.trunc = String.prototype.trunc || function(n) {
-    return this.length > n ? this.substr(0, n - 1) + '&hellip;' : this;
-};
+function truncateString(str, n) {
+    return str.length > n ? str.substr(0, n - 1) + '&hellip;' : str;
+}
 
 module.exports = function errormailer(transport, opts) {
 
@@ -89,7 +89,7 @@ module.exports = function errormailer(transport, opts) {
         locals._ = _;
 
         if (locals.message)
-          mail.subject += " " + locals.message.trunc(30);
+          mail.subject += " " + truncateString(locals.message, 30);
 
         template('basic_error', locals, callback);
       },
