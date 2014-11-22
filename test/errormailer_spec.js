@@ -190,12 +190,34 @@ describe("error-mailer", function() {
     };
   });
 
+  it("should include the error no, code and the status in the title if the error object has them", function(done) {
+    instance = errormailer(transport, {});
+    instance({ message: "an error with code and status", errno: 34, code: "ENOENT", status: 413 });
+
+    afterSend = function() {
+      verifyMailWithOpts({ text: sinon.match("34") });
+      verifyMailWithOpts({ text: sinon.match("ENOENT") });
+      verifyMailWithOpts({ html: sinon.match(/Error \(Error code 34 = ENOENT, Error status code 413\)<\/h2/)});
+      done();
+    };
+  });
+
   it("should NOT include the error no and code in the title if the error no is undefined", function(done) {
     instance = errormailer(transport, {});
-    instance({ message: "an error w/o no but code", errno: undefined, code: "ENOENT" });
+    instance({ message: "an error w/o no but code", code: "ENOENT" });
 
     afterSend = function() {
       verifyMailWithOpts({ html: sinon.match(/Error<\/h2/)});
+      done();
+    };
+  });
+
+  it("should NOT include the error no and code in the title but status code if only the status code is given", function(done) {
+    instance = errormailer(transport, {});
+    instance({ message: "an error with status only", status: 422 });
+
+    afterSend = function() {
+      verifyMailWithOpts({ html: sinon.match(/Error \(Error status code 422\)<\/h2/)});
       done();
     };
   });
@@ -278,6 +300,22 @@ describe("error-mailer", function() {
 
     afterSend = function() {
       verifyMailWithOpts({ subject: sinon.match("Error: this is a very long message l...") });
+      done();
+    };
+  });
+
+  it("should print additional error properties when in debug mode", function(done) {
+    instance = errormailer(transport, {
+      debugProperties: true
+    });
+
+    instance({ message: "debug me", limit: 4353456345, expected: 9848234, some_context: 'some context' });
+
+    afterSend = function() {
+      verifyMailWithOpts({ html: sinon.match(/Error properties \(debug\)<\/h2>/)});
+      verifyMailWithOpts({ html: sinon.match(/<strong>limit\:<\/strong> 4353456345<br>/)});
+      verifyMailWithOpts({ html: sinon.match(/<strong>expected\:<\/strong> 9848234<br>/)});
+      verifyMailWithOpts({ html: sinon.match(/<strong>some_context\:<\/strong> some context<br>/)});
       done();
     };
   });

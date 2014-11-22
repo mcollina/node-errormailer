@@ -25,6 +25,8 @@ module.exports = function errormailer(transport, opts) {
   // https://github.com/mcollina/node-errormailer/issues/12
   opts.ignore     = opts.ignore || false;
 
+  opts.debugProperties = opts.debugProperties || false;
+
   // four arguments are needed by connect
   return function(errorToBeSent, req, res, next) {
 
@@ -55,8 +57,9 @@ module.exports = function errormailer(transport, opts) {
       function(template, callback) {
 
         var locals = {
-          subject: opts.subject,
-          title:   'Error'
+          subject:          opts.subject,
+          title:            'Error',
+          errorProperties:  undefined
         };
 
         if (typeof errorToBeSent == 'string') {
@@ -75,14 +78,38 @@ module.exports = function errormailer(transport, opts) {
 
           locals.stack = errorToBeSent.stack;
 
-          // append error number and code to title
-          if (typeof errorToBeSent.errno !== 'undefined' && errorToBeSent.errno !== "" &&
-              typeof errorToBeSent.code !== 'undefined' && errorToBeSent.code !== "") {
+          var errorNumber = errorToBeSent.errno && errorToBeSent.errno !== "" ? errorToBeSent.errno : null,
+              errorCode   = errorToBeSent.code && errorToBeSent.code !== "" ? errorToBeSent.code : null,
+              errorStatus = errorToBeSent.status && errorToBeSent.status !== "" ? errorToBeSent.status : null,
 
-            locals.title += ' (Error code ' + errorToBeSent.errno +
-                            ' = ' +
-                            errorToBeSent.code +
-                            ')';
+              errorContext = []
+
+          if (errorNumber || errorCode || errorStatus) {
+
+            if (errorCode && errorNumber) {
+              errorContext.push('Error code ' + errorNumber + ' = ' + errorCode);
+            }
+
+            if (errorStatus) {
+              errorContext.push('Error status code ' + errorStatus)
+            }
+          }
+
+          if (errorContext.length > 0) {
+            locals.title += ' (' + errorContext.join(', ') + ')'
+          }
+
+          // mh: this will collect all error properties if debug mode is wanted
+          if (opts.debugProperties) {
+            var property
+
+            locals.errorProperties = {}
+
+            for (property in errorToBeSent) {
+                if (errorToBeSent.hasOwnProperty(property)) {
+                    locals.errorProperties[property] = errorToBeSent[property]
+                }
+            }
           }
         }
         locals.req = req;

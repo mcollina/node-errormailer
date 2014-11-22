@@ -36,6 +36,13 @@
                             <% }) %>
                             <% } %>
 
+                            <% if (errorProperties != undefined && Object.keys(errorProperties).length > 0) { %>
+                            <h2 class="h2">Error properties (debug)</h2>
+                            <% _.each(errorProperties, function(value, key) { %>
+                            <strong><%= key %>:</strong> <%= value %><br />
+                            <% }) %>
+                            <% } %>
+
                             <% if (stack != "" && stack != undefined) { %>
                             <h2 class="h2">Stack</h2>
                             <code>
