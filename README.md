@@ -35,6 +35,8 @@ var errorHandler = errormailer(transport, {
 errorHandler("this is an error!");
 ```
 
+### Option sendAlways
+
 Currently error emails are only sent for production environments. But if you want it to send always, use the option `sendAlways`. There is also an option `ignore` where you can specify your own logic when to ignore an error to be sent, for example:
 
 ```
@@ -45,6 +47,19 @@ var errorHandler = errormailer(transport, {
     // any errors won't be sent that have a code && it's below 400
     return errorToBeSent.code && errorToBeSent.code < 400;
   }
+});
+```
+
+### Option debugProperties
+
+Sometimes error objects come with unusual properties you'd like to see in the error mail. Just set `debugProperties` to true to get them all in the error mail. This can be useful if you want to inspect errors deeper.
+
+
+```
+var errorHandler = errormailer(transport, {
+  subject: "Enable debug mode",
+  to: "matteo.collina@gmail.com",
+  debugProperties: true
 });
 ```
 
