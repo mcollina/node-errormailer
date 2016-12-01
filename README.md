@@ -124,7 +124,9 @@ http://creativecommons.org/licenses/by-sa/3.0/
 
 ## LICENSE - "MIT License"
 
-Copyright (c) 2013-2015 Matteo Collina, http://matteocollina.com
+Copyright (c) 2013-2016
+Matteo Collina, http://matteocollina.com
+Michael Heuberger, https://binarykitchen.com
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation

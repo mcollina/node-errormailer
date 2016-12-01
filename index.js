@@ -1,8 +1,9 @@
-var path           = require('path');
-var templatesDir   = path.join(__dirname, 'templates');
-var emailTemplates = require('email-templates');
-var _              = require('underscore');
-var async          = require('async');
+const path          = require('path');
+const EmailTemplate = require('email-templates').EmailTemplate;
+const _             = require('underscore');
+const waterfall     = require('async/waterfall');
+
+const basicErrorTemplatesDir = path.join(__dirname, 'templates', 'basic_error');
 
 function truncateString(str, n) {
     return str.length > n ? str.substr(0, n - 1) + '...' : str;
@@ -11,7 +12,7 @@ function truncateString(str, n) {
 module.exports = function errormailer(transport, opts) {
 
   // mh: I moved this inside that block so that I can test properly with different environments
-  var env = process.env.NODE_ENV || 'development';
+  const env = process.env.NODE_ENV || 'development';
 
   opts = opts || {};
 
@@ -50,13 +51,14 @@ module.exports = function errormailer(transport, opts) {
       return;
     }
 
-    var mail = _.clone(opts);
+    const mail = _.clone(opts);
 
-    async.waterfall([
-      async.apply(emailTemplates, templatesDir),
-      function(template, callback) {
+    waterfall([
+      function(callback) {
 
-        var locals = {
+        const basicErrorEmail = new EmailTemplate(basicErrorTemplatesDir)
+
+        const locals = {
           subject:          opts.subject,
           title:            'Error',
           errorProperties:  undefined
@@ -78,11 +80,11 @@ module.exports = function errormailer(transport, opts) {
 
           locals.stack = errorToBeSent.stack;
 
-          var errorNumber = errorToBeSent.errno && errorToBeSent.errno !== "" ? errorToBeSent.errno : null,
-              errorCode   = errorToBeSent.code && errorToBeSent.code !== "" ? errorToBeSent.code : null,
-              errorStatus = errorToBeSent.status && errorToBeSent.status !== "" ? errorToBeSent.status : null,
+          const errorNumber = errorToBeSent.errno && errorToBeSent.errno !== "" ? errorToBeSent.errno : null,
+                errorCode   = errorToBeSent.code && errorToBeSent.code !== "" ? errorToBeSent.code : null,
+                errorStatus = errorToBeSent.status && errorToBeSent.status !== "" ? errorToBeSent.status : null,
 
-              errorContext = []
+                errorContext = []
 
           if (errorNumber || errorCode || errorStatus) {
 
@@ -112,13 +114,20 @@ module.exports = function errormailer(transport, opts) {
             }
           }
         }
+
         locals.req = req;
         locals._ = _;
 
         if (locals.message)
           mail.subject += " " + truncateString(locals.message, 30);
 
-        template('basic_error', locals, callback);
+        basicErrorEmail.render(locals, function(err, result) {
+          if (err) {
+            callback(err)
+          } else {
+            callback(null, result.html, result.text)
+          }
+        });
       },
       function(html, text, callback) {
         mail.text = text;
@@ -126,9 +135,9 @@ module.exports = function errormailer(transport, opts) {
         transport.sendMail(mail, callback);
       }
     ], function(err) {
-      if(err) {
-        console.log(err);
-        console.log(errorToBeSent.toString());
+      if (err) {
+        console.error(err);
+        console.error(errorToBeSent.toString());
       }
       next(errorToBeSent);
     });
