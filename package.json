@@ -1,6 +1,6 @@
 {
   "name": "errormailer",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Sending email for each error in your node app was never easier! It supports connect and express.",
   "main": "index.js",
   "scripts": {
@@ -32,7 +32,7 @@
   "license": "MIT",
   "dependencies": {
     "async": "2.1.4",
-    "ejs": "2.5.3",
+    "ejs": "2.5.5",
     "email-templates": "2.5.4",
     "underscore": "1.8.3"
   },
@@ -42,7 +42,7 @@
     "sinon": "1.17.6",
     "sinon-chai": "2.8.0",
     "connect": "3.5.0",
-    "nodemailer": "2.6.4"
+    "nodemailer": "2.7.0"
   },
   "engines": {
     "node": ">= 4.1.0"
