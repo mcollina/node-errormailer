@@ -109,7 +109,7 @@ module.exports = function errormailer(transport, opts) {
 
             for (property in errorToBeSent) {
                 if (errorToBeSent.hasOwnProperty(property)) {
-                    locals.errorProperties[property] = errorToBeSent[property].toString()
+                    locals.errorProperties[property] = JSON.stringify(errorToBeSent[property])
                 }
             }
           }

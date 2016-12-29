@@ -315,9 +315,8 @@ describe("error-mailer", function() {
       verifyMailWithOpts({ html: sinon.match(/Error properties \(debug\)<\/h2>/)});
       verifyMailWithOpts({ html: sinon.match(/<strong>limit\:<\/strong> 4353456345<br>/)});
       verifyMailWithOpts({ html: sinon.match(/<strong>expected\:<\/strong> 9848234<br>/)});
-      verifyMailWithOpts({ html: sinon.match(/<strong>some_context\:<\/strong> some context<br>/)});
+      verifyMailWithOpts({ html: sinon.match(/<strong>some_context\:<\/strong> &#34;some context&#34;<br>/)});
       done();
     };
   });
 });
-
