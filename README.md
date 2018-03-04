@@ -124,7 +124,7 @@ http://creativecommons.org/licenses/by-sa/3.0/
 
 ## LICENSE - "MIT License"
 
-Copyright (c) 2013-2016
+Copyright (c) 2013-2018
 Matteo Collina, http://matteocollina.com
 Michael Heuberger, https://binarykitchen.com
 
