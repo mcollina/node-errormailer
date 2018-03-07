@@ -1,42 +1,42 @@
-const path          = require('path');
-const EmailTemplate = require('email-templates').EmailTemplate;
-const _             = require('underscore');
-const waterfall     = require('async/waterfall');
+'use strict'
 
-const basicErrorTemplatesDir = path.join(__dirname, 'templates', 'basic_error');
+const _ = require('underscore')
+const path = require('path')
+const { EmailTemplate } = require('email-templates')
+const waterfall = require('async/waterfall')
 
-function truncateString(str, n) {
-    return str.length > n ? str.substr(0, n - 1) + '...' : str;
+const basicErrorTemplatesDir = path.join(__dirname, 'templates', 'basic_error')
+
+function truncateString (str, n) {
+  return str.length > n ? str.substr(0, n - 1) + '...' : str
 }
 
-module.exports = function errormailer(transport, opts) {
-
+module.exports = function errormailer (transport, opts) {
   // mh: I moved this inside that block so that I can test properly with different environments
-  const env = process.env.NODE_ENV || 'development';
+  const env = process.env.NODE_ENV || 'development'
 
-  opts = opts || {};
+  opts = opts || {}
 
-  opts.from       = opts.from || "error@localhost";
-  opts.to         = opts.to || "error@localhost";
-  opts.subject    = opts.subject || "Error:";
+  opts.from = opts.from || 'error@localhost'
+  opts.to = opts.to || 'error@localhost'
+  opts.subject = opts.subject || 'Error:'
 
   // https://github.com/mcollina/node-errormailer/issues/9
-  opts.sendAlways = opts.sendAlways || false;
+  opts.sendAlways = opts.sendAlways || false
 
   // https://github.com/mcollina/node-errormailer/issues/12
-  opts.ignore     = opts.ignore || false;
+  opts.ignore = opts.ignore || false
 
-  opts.debugProperties = opts.debugProperties || false;
+  opts.debugProperties = opts.debugProperties || false
 
   // four arguments are needed by connect
-  return function(errorToBeSent, req, res, next) {
-
+  return function (errorToBeSent, req, res, next) {
     // override to support both node callback style
     // and connect/express
-    next = _.last(arguments);
+    next = _.last(arguments)
 
-    if (typeof next != 'function') {
-      next = function() {};
+    if (typeof next !== 'function') {
+      next = function () {}
     }
 
     // mh: do not process any further under three conditions:
@@ -44,52 +44,47 @@ module.exports = function errormailer(transport, opts) {
     // - opts.sendAlways is false && environment is not production
     // - custom function in opts.ignore tells to ignore the error
     if (!errorToBeSent ||
-       (!opts.sendAlways && env != 'production') ||
-       (opts.ignore && typeof opts.ignore == 'function' && opts.ignore(errorToBeSent))) {
-
-      next(errorToBeSent);
-      return;
+       (!opts.sendAlways && env !== 'production') ||
+       (opts.ignore && typeof opts.ignore === 'function' && opts.ignore(errorToBeSent))) {
+      next(errorToBeSent)
+      return
     }
 
-    const mail = _.clone(opts);
+    const mail = _.clone(opts)
 
     waterfall([
-      function(callback) {
-
+      function (callback) {
         const basicErrorEmail = new EmailTemplate(basicErrorTemplatesDir)
 
         const locals = {
-          subject:          opts.subject,
-          title:            'Error',
-          errorProperties:  undefined
-        };
+          subject: opts.subject,
+          title: 'Error',
+          errorProperties: undefined
+        }
 
-        if (typeof errorToBeSent == 'string') {
-          locals.message = errorToBeSent;
-          locals.stack = "";
+        if (typeof errorToBeSent === 'string') {
+          locals.message = errorToBeSent
+          locals.stack = ''
         } else {
-
           // mh: it is better to call toString() because it enables
           // developoers to customize the message output by
           // overriding toString() in an error sub class
           if (errorToBeSent instanceof Error) {
-            locals.message = errorToBeSent.toString();
+            locals.message = errorToBeSent.toString()
           } else {
-            locals.message = errorToBeSent.message;
+            locals.message = errorToBeSent.message
           }
 
-          locals.stack = errorToBeSent.stack;
+          locals.stack = errorToBeSent.stack
 
-          const errorNumber = errorToBeSent.errno && errorToBeSent.errno !== "" ? errorToBeSent.errno : null,
-                errorCode   = errorToBeSent.code && errorToBeSent.code !== "" ? errorToBeSent.code : null,
-                errorStatus = errorToBeSent.status && errorToBeSent.status !== "" ? errorToBeSent.status : null,
-
-                errorContext = []
+          const errorNumber = errorToBeSent.errno && errorToBeSent.errno !== '' ? errorToBeSent.errno : null
+          const errorCode = errorToBeSent.code && errorToBeSent.code !== '' ? errorToBeSent.code : null
+          const errorStatus = errorToBeSent.status && errorToBeSent.status !== '' ? errorToBeSent.status : null
+          const errorContext = []
 
           if (errorNumber || errorCode || errorStatus) {
-
             if (errorCode && errorNumber) {
-              errorContext.push('Error code ' + errorNumber + ' = ' + errorCode);
+              errorContext.push('Error code ' + errorNumber + ' = ' + errorCode)
             }
 
             if (errorStatus) {
@@ -108,38 +103,39 @@ module.exports = function errormailer(transport, opts) {
             locals.errorProperties = {}
 
             for (property in errorToBeSent) {
-                if (errorToBeSent.hasOwnProperty(property)) {
-                    locals.errorProperties[property] = JSON.stringify(errorToBeSent[property])
-                }
+              if (errorToBeSent.hasOwnProperty(property)) {
+                locals.errorProperties[property] = JSON.stringify(errorToBeSent[property])
+              }
             }
           }
         }
 
-        locals.req = req;
-        locals._ = _;
+        locals.req = req
+        locals._ = _
 
-        if (locals.message)
-          mail.subject += " " + truncateString(locals.message, 30);
+        if (locals.message) {
+          mail.subject += ' ' + truncateString(locals.message, 30)
+        }
 
-        basicErrorEmail.render(locals, function(err, result) {
+        basicErrorEmail.render(locals, function (err, result) {
           if (err) {
             callback(err)
           } else {
             callback(null, result.html, result.text)
           }
-        });
+        })
       },
-      function(html, text, callback) {
-        mail.text = text;
-        mail.html = html;
-        transport.sendMail(mail, callback);
+      function (html, text, callback) {
+        mail.text = text
+        mail.html = html
+        transport.sendMail(mail, callback)
       }
-    ], function(err) {
+    ], function (err) {
       if (err) {
-        console.error(err);
-        console.error(errorToBeSent.toString());
+        console.error(err)
+        console.error(errorToBeSent.toString())
       }
-      next(errorToBeSent);
-    });
-  };
-};
+      next(errorToBeSent)
+    })
+  }
+}
