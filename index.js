@@ -2,6 +2,7 @@
 
 const _ = require('underscore')
 const path = require('path')
+const util = require('util')
 const { EmailTemplate } = require('email-templates')
 const waterfall = require('async/waterfall')
 
@@ -30,7 +31,7 @@ module.exports = function errormailer (transport, opts) {
   opts.debugProperties = opts.debugProperties || false
 
   // four arguments are needed by connect
-  return function (errorToBeSent, req, res, next) {
+  return function (errorToBeSent, req, _res, next) {
     // override to support both node callback style
     // and connect/express
     next = _.last(arguments)
@@ -67,7 +68,7 @@ module.exports = function errormailer (transport, opts) {
           locals.stack = ''
         } else {
           // mh: it is better to call toString() because it enables
-          // developoers to customize the message output by
+          // developers to customize the message output by
           // overriding toString() in an error sub class
           if (errorToBeSent instanceof Error) {
             locals.message = errorToBeSent.toString()
@@ -104,7 +105,9 @@ module.exports = function errormailer (transport, opts) {
 
             for (property in errorToBeSent) {
               if (errorToBeSent.hasOwnProperty(property)) {
-                locals.errorProperties[property] = JSON.stringify(errorToBeSent[property])
+                // TODO Consider increasing depth if you have a deep object
+                var value = util.inspect(errorToBeSent[property], { showHidden: true, depth: 4 })
+                locals.errorProperties[property] = value
               }
             }
           }

@@ -325,7 +325,29 @@ describe('error-mailer', function () {
       verifyMailWithOpts({html: sinon.match(/Error properties \(debug\)<\/h2>/)})
       verifyMailWithOpts({html: sinon.match(/<strong>limit:<\/strong> 4353456345<br>/)})
       verifyMailWithOpts({html: sinon.match(/<strong>expected:<\/strong> 9848234<br>/)})
-      verifyMailWithOpts({html: sinon.match(/<strong>some_context:<\/strong> &#34;some context&#34;<br>/)})
+      verifyMailWithOpts({html: sinon.match(/<strong>some_context:<\/strong> &#39;some context&#39;<br>/)})
+      done()
+    }
+  })
+
+  it('debug mode can handle circular references in error objects', function (done) {
+    instance = errormailer(transport, {
+      debugProperties: true
+    })
+
+    var circle = {}
+    circle.circle = circle
+
+    instance({
+      message: 'debug me',
+      limit: 4353456345,
+      expected: 9848234,
+      some_context: circle
+    })
+
+    afterSend = function () {
+      verifyMailWithOpts({html: sinon.match(/Error properties \(debug\)<\/h2>/)})
+      verifyMailWithOpts({html: sinon.match(/[Circular *1]/)})
       done()
     }
   })
